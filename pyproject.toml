@@ -1,0 +1,34 @@
+[tool.poetry]
+name = "python-crossword"
+version = "0.1.0"
+description = ""
+authors = ["Patrick Kalkman <patrick@simpletechture.nl>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "app"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+openapi = "^1.1.0"
+langchain = "^0.0.177"
+python-dotenv = "^1.0.0"
+openai = "^0.27.8"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.4.1"
+bandit = "^1.7.5"
+pytest = "^7.4.0"
+
+[tool.bandit]
+exclude_dirs = ["tests",]
+
+[tool.pytest.ini_options]
+filterwarnings = ["ignore::Warning"]
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
