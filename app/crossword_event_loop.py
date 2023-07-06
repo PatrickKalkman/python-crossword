@@ -1,4 +1,3 @@
-import time
 import pygame
 from pygame.locals import QUIT
 
@@ -10,45 +9,68 @@ LINE_WIDTH = 1
 
 class CrosswordEventLoop:
     def __init__(self, crossword):
-        pygame.init()
         self.crossword = crossword
-        self.screen = pygame.display.set_mode((self.crossword.width*CELL_SIZE,
-                                               self.crossword.height*CELL_SIZE))
-        pygame.display.set_caption("Crossword")
-        pygame.display.update()
         self.assignment = None
+
+    def initialize_pygame(self):
+        pygame.init()
+        self.screen = pygame.display.set_mode((self.crossword.width * CELL_SIZE,
+                                               self.crossword.height * CELL_SIZE))
+        pygame.display.set_caption("Crossword")
+
+    def terminate_pygame(self):
+        pygame.quit()
+
+    def draw_cell(self, i, j):
+        color = (255, 255, 255) if self.crossword.structure[i][j] else (0, 0, 0)
+        pygame.draw.rect(self.screen, color,
+                         (j * CELL_SIZE,
+                          i * CELL_SIZE,
+                          CELL_SIZE,
+                          CELL_SIZE))
+
+        if self.crossword.structure[i][j]:
+            pygame.draw.rect(self.screen, (0, 0, 0),
+                             (j * CELL_SIZE,
+                              i * CELL_SIZE,
+                              CELL_SIZE,
+                              CELL_SIZE),
+                             LINE_WIDTH)
+
+    def draw_letter(self, i, j, letter):
+        font = pygame.font.Font(None, 48)
+        text = font.render(letter, True, (0, 0, 0))  # black text
+        self.screen.blit(text,
+                         (j * CELL_SIZE + (CELL_SIZE - text.get_width()) / 2,
+                          i * CELL_SIZE + (CELL_SIZE - text.get_height()) / 2))
 
     def draw_assignment(self):
         self.screen.fill((0, 0, 0))  # black background
+
         for i in range(self.crossword.height):
             for j in range(self.crossword.width):
-                if self.crossword.structure[i][j]:  # if the cell can be written to
-                    pygame.draw.rect(self.screen, (255, 255, 255), ((j*CELL_SIZE) + LINE_WIDTH, (i*CELL_SIZE) + LINE_WIDTH, CELL_SIZE - 2*LINE_WIDTH, CELL_SIZE - 2*LINE_WIDTH))  # white cell
-                else:  # if the cell can't be written to
-                    pygame.draw.rect(self.screen, (0, 0, 0), (j*CELL_SIZE, i*CELL_SIZE, CELL_SIZE, CELL_SIZE))  # black cell
+                self.draw_cell(i, j)
 
         if self.assignment is None:
             return
 
         assignment_copy = self.assignment.copy()
-
         for variable, word in assignment_copy.items():
             direction = variable.direction
             for k in range(len(word)):
                 i = variable.i + (k if direction == Variable.DOWN else 0)
                 j = variable.j + (k if direction == Variable.ACROSS else 0)
                 if self.crossword.structure[i][j]:
-                    # draw text for the letter
-                    font = pygame.font.Font(None, 48)
-                    text = font.render(word[k], True, (0, 0, 0))  # black text
-                    self.screen.blit(text, (j*CELL_SIZE + (CELL_SIZE - text.get_width()) / 2, i*CELL_SIZE + (CELL_SIZE - text.get_height()) / 2))  # center text in cell
+                    self.draw_letter(i, j, word[k])
 
         pygame.display.update()
 
     def update_assignment(self, assignment):
         self.assignment = assignment
+        # pygame.time.delay(250)
 
     def run(self):
+        self.initialize_pygame()
         running = True
         while running:
             for event in pygame.event.get():
@@ -56,4 +78,4 @@ class CrosswordEventLoop:
                     running = False
             if self.assignment:
                 self.draw_assignment()
-        pygame.quit()
+        self.terminate_pygame()

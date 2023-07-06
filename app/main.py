@@ -24,7 +24,7 @@ def main():
 
     all_words = short_words + medium_words + long_words + additional_words
 
-    structure_reader = StructureReader('./structures/structure0.txt')
+    structure_reader = StructureReader('./structures/structure2.txt')
     structure, height, width = structure_reader.read_structure()
     crossword = Crossword(structure, width, height, all_words)
 

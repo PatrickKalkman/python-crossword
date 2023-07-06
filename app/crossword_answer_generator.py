@@ -16,7 +16,7 @@ class CrosswordAnswerGenerator:
             with open(cache_file, "r") as f:
                 words = json.load(f)
         else:
-            prompt = (f"Generate a list of {num_words} {word_length}-syllable"
+            prompt = (f"Generate a list of {num_words} {word_length}-syllable "
                       f"English words related to the category '{category}', suitable"
                       "for a crossword puzzle.")
 
@@ -32,7 +32,7 @@ class CrosswordAnswerGenerator:
 
             print(response)
 
-            words = self._parse_response(response['choices'][0]['text'])
+            words = self._parse_response(response['choices'][0]['text'])  # type: ignore
             with open(cache_file, "w") as f:
                 json.dump(words, f)
 
