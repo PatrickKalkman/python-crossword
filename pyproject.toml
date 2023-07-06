@@ -13,6 +13,7 @@ openapi = "^1.1.0"
 langchain = "^0.0.177"
 python-dotenv = "^1.0.0"
 openai = "^0.27.8"
+pygame = "^2.5.0"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.4.1"
