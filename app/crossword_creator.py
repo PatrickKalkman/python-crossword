@@ -1,11 +1,8 @@
-from app.variable import Variable
-import pygame
-
-
 class CrosswordCreator():
 
-    def __init__(self, crossword, callback=None):
-        self.callback = callback
+    def __init__(self, crossword, update_callback=None, finish_callback=None):
+        self.update_callback = update_callback
+        self.finish_callback = finish_callback
         self.crossword = crossword
         self.domains = {
             var: self.crossword.words.copy()
@@ -90,20 +87,24 @@ class CrosswordCreator():
 
     def select_unassigned_variable(self, assignment):
         unassigned = [v for v in self.crossword.variables if v not in assignment]
-        return min(unassigned, key=lambda v: (len(self.domains[v]), -len(self.crossword.neighbors(v))))
+        return min(unassigned, key=lambda v: (len(self.domains[v]),
+                                              -len(self.crossword.neighbors(v))))
 
     def get_assignment(self):
         return self.assignment
 
     def backtrack(self, assignment):
         if self.assignment_complete(assignment):
+            if self.finish_callback:
+                self.finish_callback()
+            self.assignment = assignment
             return assignment
 
         var = self.select_unassigned_variable(assignment)
         for value in self.order_domain_values(var, assignment):
             assignment[var] = value
-            if self.callback:
-                self.callback(assignment)
+            if self.update_callback:
+                self.update_callback(assignment)
             if self.consistent(assignment):
                 result = self.backtrack(assignment)
                 if result is not None:

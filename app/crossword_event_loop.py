@@ -11,6 +11,7 @@ class CrosswordEventLoop:
     def __init__(self, crossword):
         self.crossword = crossword
         self.assignment = None
+        self.running = True
 
     def initialize_pygame(self):
         pygame.init()
@@ -39,13 +40,13 @@ class CrosswordEventLoop:
 
     def draw_letter(self, i, j, letter):
         font = pygame.font.Font(None, 48)
-        text = font.render(letter, True, (0, 0, 0))  # black text
+        text = font.render(letter, True, (0, 0, 0))
         self.screen.blit(text,
                          (j * CELL_SIZE + (CELL_SIZE - text.get_width()) / 2,
                           i * CELL_SIZE + (CELL_SIZE - text.get_height()) / 2))
 
     def draw_assignment(self):
-        self.screen.fill((0, 0, 0))  # black background
+        self.screen.fill((0, 0, 0))
 
         for i in range(self.crossword.height):
             for j in range(self.crossword.width):
@@ -67,15 +68,17 @@ class CrosswordEventLoop:
 
     def update_assignment(self, assignment):
         self.assignment = assignment
-        # pygame.time.delay(250)
+        pygame.time.delay(250)
+
+    def finish(self):
+        self.running = False
 
     def run(self):
         self.initialize_pygame()
-        running = True
-        while running:
+        while self.running:
             for event in pygame.event.get():
                 if event.type == QUIT:
-                    running = False
+                    self.running = False
             if self.assignment:
                 self.draw_assignment()
         self.terminate_pygame()
