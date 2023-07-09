@@ -13,7 +13,7 @@ class CrosswordAnswerGenerator(OpenAIResponseProcessor):
         words = [word.lower().strip() for word in words]
         return words
 
-    def _create_cache_file(self, category, word_length, num_words):
+    def _create_cache_filename(self, category, word_length, num_words):
         return f"cache/{category}_{word_length}_{num_words}.json"
 
     def get_additional_words(self):

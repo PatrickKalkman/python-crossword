@@ -45,12 +45,26 @@ class CrosswordEventLoop:
                          (j * CELL_SIZE + (CELL_SIZE - text.get_width()) / 2,
                           i * CELL_SIZE + (CELL_SIZE - text.get_height()) / 2))
 
-    def draw_assignment(self):
+    def draw_number(self, i, j, number):
+        font = pygame.font.Font(None, 24)
+        text = font.render(str(number), True, (0, 0, 0))
+        self.screen.blit(text, (j * CELL_SIZE + 5, i * CELL_SIZE + 5))
+
+    def draw_assignment(self, only_grid=False):
         self.screen.fill((0, 0, 0))
 
         for i in range(self.crossword.height):
             for j in range(self.crossword.width):
                 self.draw_cell(i, j)
+
+                variable = self.crossword.get_variable_at_cell(i, j)
+                if variable is not None:
+                    if self._get_variable_number(variable) is not None:
+                        self.draw_number(i, j,
+                                         self.crossword.variable_to_number[variable])
+
+        if only_grid:
+            return
 
         if self.assignment is None:
             return
@@ -66,6 +80,9 @@ class CrosswordEventLoop:
 
         pygame.display.update()
 
+    def _get_variable_number(self, variable):
+        return self.crossword.variable_to_number[variable]
+
     def update_assignment(self, assignment):
         self.assignment = assignment
         pygame.time.delay(250)
@@ -75,6 +92,9 @@ class CrosswordEventLoop:
 
     def run(self):
         self.initialize_pygame()
+        self.draw_assignment(only_grid=True)
+        pygame.image.save(self.screen, "crosswords/crossword.png")
+
         while self.running:
             for event in pygame.event.get():
                 if event.type == QUIT:

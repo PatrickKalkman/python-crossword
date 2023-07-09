@@ -6,7 +6,7 @@ class CrosswordCueGenerator(OpenAIResponseProcessor):
         return f"Generate a clue for the crossword answer '{answer}'."
 
     def _parse_response(self, response_text):
-        return response_text.strip()
+        return response_text.strip().replace("\"", "")
 
-    def _create_cache_file(self, answer):
+    def _create_cache_filename(self, answer):
         return f"cache/{answer}.json"

@@ -9,17 +9,25 @@ class Crossword:
         self.words = words
         self.variables = set()
         self.overlaps = dict()
+        self.variable_to_number = {}
         self.determine_variables()
         self.determine_overlaps()
-
-    def neighbors(self, var):
-        return set(v for v in self.variables if v != var and self.overlaps[v, var])
 
     def determine_variables(self):
         for i in range(self.height):
             for j in range(self.width):
                 self.check_vertical(i, j)
                 self.check_horizontal(i, j)
+        self.initialize_variable_to_number()
+
+    def determine_overlaps(self):
+        for v1 in self.variables:
+            for v2 in self.variables:
+                if v1 != v2:
+                    self.set_overlap(v1, v2)
+
+    def neighbors(self, var):
+        return set(v for v in self.variables if v != var and self.overlaps[v, var])
 
     def check_vertical(self, i, j):
         if self.structure[i][j] and (i == 0 or not self.structure[i - 1][j]):
@@ -53,11 +61,7 @@ class Crossword:
                 break
         return length
 
-    def determine_overlaps(self):
-        for v1 in self.variables:
-            for v2 in self.variables:
-                if v1 != v2:
-                    self.set_overlap(v1, v2)
+
 
     def set_overlap(self, v1, v2):
         cells1 = v1.cells
@@ -69,3 +73,29 @@ class Crossword:
             overlap_point = intersection.pop()
             self.overlaps[v1, v2] = (cells1.index(overlap_point),
                                      cells2.index(overlap_point))
+
+    def get_variable_at_cell(self, i, j):
+        for variable in self.variables:
+            if variable.i == i and variable.j == j:
+                return variable
+        return None
+
+    def initialize_variable_to_number(self):
+        number = 1
+        starting_point_to_number = {}
+        for variable in sorted(self.variables,
+                               key=lambda var: (var.i, var.j, var.direction)):
+            starting_point = (variable.i, variable.j)
+            if starting_point not in starting_point_to_number:
+                starting_point_to_number[starting_point] = number
+                number += 1
+            self.variable_to_number[variable] = starting_point_to_number[starting_point]
+
+    def _has_across_at(self, i, j):
+        for var in self.variables:
+            if var.i == i and var.j == j and var.direction == Variable.ACROSS:
+                return True
+        return False
+
+    def get_variable_number(self, var):
+        return self.variable_to_number.get(var, None)

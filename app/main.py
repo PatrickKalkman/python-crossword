@@ -5,6 +5,7 @@ from crossword import Crossword
 from crossword_creator import CrosswordCreator
 from crossword_event_loop import CrosswordEventLoop
 from crossword_cue_generator import CrosswordCueGenerator
+from pdf_generator import PDFGenerator
 
 
 def main():
@@ -35,18 +36,16 @@ def main():
     creator_thread.start()
     event_loop.run()
     assignment = creator.assignment
-    answers = []
+    crossword_cue_generator = CrosswordCueGenerator()
     if assignment is None:
         print("No solution found.")
     else:
-        for variable, word in assignment.items():
-            answers.append(word)
-            print(f"({variable.i}, {variable.j}): {variable.direction} => {word}")
+        for variable, word in sorted(assignment.items(), key=lambda item: crossword.get_variable_number(item[0])):
+            cue = crossword_cue_generator.generate(word)
+            print(f"{crossword.get_variable_number(variable)}: {variable.direction} => {cue}")
 
-    crossword_cue_generator = CrosswordCueGenerator()
-    for answer in answers:
-        cue = crossword_cue_generator.generate(answer)
-        print(cue)
+    pdf_generator = PDFGenerator()
+    pdf_generator.create_pdf(assignment, crossword, crossword_cue_generator)
 
 
 if __name__ == "__main__":

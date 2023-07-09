@@ -16,11 +16,11 @@ class OpenAIResponseProcessor:
     def _parse_response(self, response_text):
         raise NotImplementedError
 
-    def _create_cache_file(self, category, word_length, num_words):
+    def _create_cache_filename(self, category, word_length, num_words):
         raise NotImplementedError
 
     def generate(self, *args, **kwargs):
-        cache_file = self._create_cache_file(*args, **kwargs)
+        cache_file = self._create_cache_filename(*args, **kwargs)
         if os.path.exists(cache_file):
             with open(cache_file, "r") as f:
                 result = json.load(f)
