@@ -1,5 +1,5 @@
 # python-crossword
-A repository that contains all the examples that go with a [Medium article called How to Craft Crosswords with Code - A Python, Pygame, and OpenAI API approach](https://medium.com/@pkalkman)
+A repository that contains all the examples that go with a [Medium article called How to Craft Crosswords with Code - A Python, Pygame, and OpenAI API approach](https://medium.com/itnext/how-to-craft-crosswords-with-code-a-python-pygame-and-openai-api-approach-14406396eacc)
 
 ![crossword](/crossword.jpg "Crossword")
 
