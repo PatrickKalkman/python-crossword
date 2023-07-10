@@ -92,7 +92,3 @@ def test_ac3(crossword_creator):
     # Check that no domains are empty
     for var, words in crossword_creator.domains.items():
         assert len(words) > 0
-
-    # You might want to add more checks here, depending on what your `ac3` function is supposed to do
-    # For example, you could add a check that for each pair of variables x and y where there's an overlap,
-    # every value in the domain of x has some value in the domain of y that doesn't cause a conflict.
